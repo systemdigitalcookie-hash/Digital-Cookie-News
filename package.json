@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@notionhq/client": "^5.6.0",
+    "link-preview-js": "^4.0.0",
     "next": "16.1.1",
     "react": "19.2.3",
     "react-dom": "19.2.3"
