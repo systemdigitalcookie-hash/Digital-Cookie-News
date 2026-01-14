@@ -2,28 +2,24 @@ import { getNewsData } from "@/lib/notion";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-export async function generateMetadata({ params }) {
-  // 🟢 SAFETY FIX: Ensure params and slug exist
-  const slug = (await params)?.slug;
-  if (!slug) return { title: "Category Archive" };
+export const revalidate = 60; // Cache data for 60 seconds
 
-  const displayTitle = slug
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-  
-  return {
-    title: `${displayTitle} | Digital Cookie News`,
-  };
+export async function generateStaticParams() {
+  return [
+    { slug: 'notion-news-updates' },
+    { slug: 'tips-tutorials' },
+    { slug: 'community' }
+  ];
+}
+
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const displayTitle = slug?.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  return { title: `${displayTitle} | Digital Cookie News Archive` };
 }
 
 export default async function CategoryPage({ params }) {
-  // 🟢 SAFETY FIX: Await params in Next.js 15+
-  const resolvedParams = await params;
-  const slug = resolvedParams?.slug;
-  
-  if (!slug) return notFound();
-
+  const { slug } = await params;
   const allData = await getNewsData();
 
   const categoryMap = {
@@ -40,14 +36,15 @@ export default async function CategoryPage({ params }) {
     .sort((a, b) => new Date(b.date) - new Date(a.date));
 
   return (
-    <main className="min-h-screen bg-zinc-50 p-6 md:p-12 font-sans">
+    <main className="min-h-screen bg-zinc-50 p-6 md:p-12 font-sans tracking-tight">
       <div className="max-w-3xl mx-auto">
-        <Link href="/" className="inline-flex items-center text-orange-600 text-[10px] font-bold uppercase tracking-[0.2em] mb-10">
+        <Link href="/" className="inline-flex items-center text-orange-600 text-[10px] font-bold uppercase tracking-[0.2em] mb-10 hover:translate-x-[-4px] transition-transform">
           ← Back to Dashboard
         </Link>
 
         <header className="mb-12 border-b border-zinc-200 pb-8">
           <h1 className="text-3xl font-bold text-zinc-900">{notionCategoryName}</h1>
+          <p className="text-zinc-500 mt-2 text-sm">Full historical archive of curated resources.</p>
         </header>
 
         <div className="space-y-6">
@@ -57,7 +54,6 @@ export default async function CategoryPage({ params }) {
                 <h3 className="text-lg font-semibold text-zinc-800 group-hover:text-orange-600 transition-colors">
                   {item.title}
                 </h3>
-                {/* 🟢 Editorial Note displayed here */}
                 {item.editorialNote && (
                   <p className="mt-3 text-[13px] text-zinc-600 italic border-l-2 border-orange-200 pl-4 bg-zinc-50/50 py-2">
                     {item.editorialNote}

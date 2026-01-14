@@ -49,8 +49,7 @@ export default async function Home() {
         </header>
 
         <div className="mb-8 px-4 py-3 bg-zinc-100/50 rounded-lg border border-zinc-200/50 text-[11px] text-zinc-500">
-          All items are aggregated from third‑party sources. Digital Cookie does not write or own this content. 
-          We curate links and summaries to make updates easier to follow.
+          Digital Cookie delivers a curated digest of the latest Notion news and tutorials. We aggregate and summarize top-tier content from across the community to ensure you never miss a critical update. All original rights belong to the respective third-party creators.
         </div>
 
         <div className="space-y-4">

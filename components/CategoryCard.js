@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link"; // 🟢 Import Link for internal routing
+import Link from "next/link"; 
 
 export default function CategoryCard({ cat, items }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -12,16 +12,12 @@ export default function CategoryCard({ cat, items }) {
   const displayedItems = isExpanded ? expandedItems : initialItems;
   const hasMoreThanFive = sortedItems.length > 5;
 
-  // Helper to create a URL-friendly string from the category name
   const slug = cat.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-');
 
   return (
     <section className="bg-white border border-zinc-200 rounded-xl shadow-sm overflow-hidden mb-8 transition-all">
       <div className="px-6 py-4 bg-zinc-50/50 border-b border-zinc-100 flex justify-between items-center">
-        <h2 className="text-zinc-400 text-[10px] font-bold uppercase tracking-[0.3em]">
-          {cat}
-        </h2>
-        {/* 🟢 Link to the new Sub-Page */}
+        <h2 className="text-zinc-400 text-[10px] font-bold uppercase tracking-[0.3em]">{cat}</h2>
         <Link href={`/category/${slug}`} className="text-[10px] text-orange-600 font-bold hover:underline uppercase tracking-tighter">
           Full Archive →
         </Link>
@@ -37,14 +33,11 @@ export default function CategoryCard({ cat, items }) {
               <h3 className="text-[14px] md:text-[15px] font-medium leading-[1.4] text-zinc-800 group-hover:text-orange-600 transition-colors">
                 {item.title}
               </h3>
-              
-              {/* 🟢 Editorial Note (Visible to Google and Users) */}
               {item.editorialNote && (
                 <p className="mt-1.5 text-[12px] text-zinc-500 italic leading-relaxed line-clamp-2">
                   {item.editorialNote}
                 </p>
               )}
-
               <div className="mt-2 flex items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
                 <span className="text-orange-600">{item.source}</span>
                 <span className="opacity-30">•</span>
