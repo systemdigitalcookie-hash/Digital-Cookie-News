@@ -33,11 +33,25 @@ export default function CategoryCard({ cat, items }) {
               <h3 className="text-[14px] md:text-[15px] font-medium leading-[1.4] text-zinc-800 group-hover:text-orange-600 transition-colors">
                 {item.title}
               </h3>
+
+              {/* 🟢 Editorial Note with "Editor Icon" */}
               {item.editorialNote && (
-                <p className="mt-1.5 text-[12px] text-zinc-500 italic leading-relaxed line-clamp-2">
-                  {item.editorialNote}
-                </p>
+                <div className="mt-2 flex items-start gap-2 bg-orange-50/40 p-2 rounded-lg border border-orange-100/50">
+                  <svg 
+                    className="w-3.5 h-3.5 text-orange-400 mt-0.5 flex-shrink-0" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor" 
+                    strokeWidth={2.5}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                  </svg>
+                  <p className="text-[12px] text-zinc-600 italic leading-relaxed line-clamp-2">
+                    {item.editorialNote}
+                  </p>
+                </div>
               )}
+
               <div className="mt-2 flex items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
                 <span className="text-orange-600">{item.source}</span>
                 <span className="opacity-30">•</span>
