@@ -25,30 +25,38 @@ export default function CategoryCard({ cat, items }) {
       
       <div className="p-6 flex flex-col gap-6">
         {displayedItems.map((item) => (
-          <a key={item.id} href={item.url} target="_blank" rel="noopener noreferrer" className="flex items-start group gap-4 pb-6 border-b border-zinc-100 last:border-0 last:pb-0">
+          <div key={item.id} className="flex items-start gap-4 pb-6 border-b border-zinc-100 last:border-0 last:pb-0">
             <div className="w-14 h-14 flex-shrink-0 bg-white rounded-full border border-zinc-200 overflow-hidden shadow-sm mt-1">
-              <img src={item.image} alt="" className="w-full h-full object-cover transition duration-700 group-hover:scale-105" />
+              <img src={item.image} alt="" className="w-full h-full object-cover transition duration-700" />
             </div>
             <div className="flex-1">
-              <h3 className="text-[14px] md:text-[15px] font-medium leading-[1.4] text-zinc-800 group-hover:text-orange-600 transition-colors">
-                {item.title}
-              </h3>
+              <a href={item.url} target="_blank" rel="noopener noreferrer" className="group">
+                <h3 className="text-[14px] md:text-[15px] font-medium leading-[1.4] text-zinc-800 group-hover:text-orange-600 transition-colors">
+                  {item.title}
+                </h3>
+              </a>
 
-              {/* 🟢 Editorial Note with "Editor Icon" */}
+              {/* 🟢 Minimalist Editorial Note with Tooltip */}
               {item.editorialNote && (
-                <div className="mt-2 flex items-start gap-2 bg-orange-50/40 p-2 rounded-lg border border-orange-100/50">
-                  <svg 
-                    className="w-3.5 h-3.5 text-orange-400 mt-0.5 flex-shrink-0" 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
-                    stroke="currentColor" 
-                    strokeWidth={2.5}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-                  </svg>
-                  <p className="text-[12px] text-zinc-600 italic leading-relaxed line-clamp-2">
+                <div className="mt-1 flex items-center gap-1.5">
+                  <p className="text-[12px] text-zinc-500 italic leading-relaxed line-clamp-1">
                     {item.editorialNote}
                   </p>
+                  
+                  {/* Small Tooltip Icon */}
+                  <div className="relative group/tooltip flex-shrink-0 cursor-help">
+                    <div className="w-3.5 h-3.5 rounded-full border border-zinc-300 text-zinc-400 flex items-center justify-center text-[8px] font-bold">
+                      !
+                    </div>
+                    {/* Tooltip Content */}
+                    <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover/tooltip:block z-20">
+                      <div className="bg-zinc-800 text-white text-[10px] px-2 py-1 rounded whitespace-nowrap shadow-lg">
+                        Written by Editor Thomas
+                      </div>
+                      {/* Tooltip Arrow */}
+                      <div className="w-2 h-2 bg-zinc-800 rotate-45 mx-auto -mt-1"></div>
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -58,7 +66,7 @@ export default function CategoryCard({ cat, items }) {
                 <span className="font-mono text-[9px]">{item.date}</span>
               </div>
             </div>
-          </a>
+          </div>
         ))}
       </div>
 
