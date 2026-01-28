@@ -36,30 +36,6 @@ export default function CategoryCard({ cat, items }) {
                 </h3>
               </a>
 
-              {/* 🟢 Minimalist Editorial Note with Tooltip */}
-              {item.editorialNote && (
-                <div className="mt-1 flex items-center gap-1.5">
-                  <p className="text-[12px] text-zinc-500 italic leading-relaxed line-clamp-1">
-                    {item.editorialNote}
-                  </p>
-                  
-                  {/* Small Tooltip Icon */}
-                  <div className="relative group/tooltip flex-shrink-0 cursor-help">
-                    <div className="w-3.5 h-3.5 rounded-full border border-zinc-300 text-zinc-400 flex items-center justify-center text-[8px] font-bold">
-                      !
-                    </div>
-                    {/* Tooltip Content */}
-                    <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover/tooltip:block z-20">
-                      <div className="bg-zinc-800 text-white text-[10px] px-2 py-1 rounded whitespace-nowrap shadow-lg">
-                        Written by Editor Thomas
-                      </div>
-                      {/* Tooltip Arrow */}
-                      <div className="w-2 h-2 bg-zinc-800 rotate-45 mx-auto -mt-1"></div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
               <div className="mt-2 flex items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
                 <span className="text-orange-600">{item.source}</span>
                 <span className="opacity-30">•</span>

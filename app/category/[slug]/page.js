@@ -1,71 +1,86 @@
 import { getNewsData } from "@/lib/notion";
-import Link from "next/link";
-import { notFound } from "next/navigation";
+import CategoryCard from "@/components/CategoryCard";
 
-export const revalidate = 60; // Cache data for 60 seconds
+// 🟢 Reduced revalidate to 10 seconds for faster Notion updates
+export const revalidate = 10;
 
-export async function generateStaticParams() {
-  return [
-    { slug: 'notion-news-updates' },
-    { slug: 'tips-tutorials' },
-    { slug: 'community' }
+export const metadata = {
+  title: 'Digital Cookie News',
+  icons: {
+    icon: '/logo.png',
+  },
+};
+
+export default async function Home() {
+  const newsItems = await getNewsData();
+  const now = new Date();
+
+  const categoryOrder = [
+    "Notion News & Updates",
+    "Tips & Tutorials",
+    "Community"
   ];
-}
 
-export async function generateMetadata({ params }) {
-  const { slug } = await params;
-  const displayTitle = slug?.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-  return { title: `${displayTitle} | Digital Cookie News Archive` };
-}
+  const existingCategories = [...new Set(newsItems.map(i => i.category))];
+  const sortedCategories = categoryOrder.filter(cat => existingCategories.includes(cat));
 
-export default async function CategoryPage({ params }) {
-  const { slug } = await params;
-  const allData = await getNewsData();
-
-  const categoryMap = {
-    "notion-news-updates": "Notion News & Updates",
-    "tips-tutorials": "Tips & Tutorials",
-    "community": "Community"
-  };
-
-  const notionCategoryName = categoryMap[slug];
-  if (!notionCategoryName) return notFound();
-  
-  const items = allData
-    .filter(item => item.category === notionCategoryName)
-    .sort((a, b) => new Date(b.date) - new Date(a.date));
+  const eventItems = newsItems
+    .filter(i => {
+      if (i.category !== "Upcoming Events" || !i.date) return false;
+      const expiry = new Date(i.date);
+      expiry.setHours(23, 59, 59, 999);
+      return expiry >= now;
+    })
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
 
   return (
-    <main className="min-h-screen bg-zinc-50 p-6 md:p-12 font-sans tracking-tight">
+    <main className="min-h-screen bg-zinc-50 text-zinc-900 p-4 md:p-12 font-sans tracking-tight">
       <div className="max-w-3xl mx-auto">
-        <Link href="/" className="inline-flex items-center text-orange-600 text-[10px] font-bold uppercase tracking-[0.2em] mb-10 hover:translate-x-[-4px] transition-transform">
-          ← Back to Dashboard
-        </Link>
-
-        <header className="mb-12 border-b border-zinc-200 pb-8">
-          <h1 className="text-3xl font-bold text-zinc-900">{notionCategoryName}</h1>
-          <p className="text-zinc-500 mt-2 text-sm">Full historical archive of curated resources.</p>
+        <header className="mb-6 flex items-center gap-3 px-2">
+          <div className="w-8 h-8 md:w-10 md:h-10 flex-shrink-0">
+            <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
+          </div>
+          <h1 className="text-xl font-bold tracking-[0.1em] text-orange-600 uppercase">
+            Digital Cookie News
+          </h1>
         </header>
 
-        <div className="space-y-6">
-          {items.map((item) => (
-            <div key={item.id} className="bg-white border border-zinc-200 rounded-xl p-6 shadow-sm">
-              <a href={item.url} target="_blank" rel="noopener noreferrer" className="group block">
-                <h3 className="text-lg font-semibold text-zinc-800 group-hover:text-orange-600 transition-colors">
-                  {item.title}
-                </h3>
-                {item.editorialNote && (
-                  <p className="mt-3 text-[13px] text-zinc-600 italic border-l-2 border-orange-200 pl-4 bg-zinc-50/50 py-2">
-                    {item.editorialNote}
-                  </p>
-                )}
-                <div className="mt-4 text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
-                  <span className="text-orange-600">{item.source}</span> • {item.date}
-                </div>
-              </a>
-            </div>
+        <div className="mb-8 px-4 py-3 bg-zinc-100/50 rounded-lg border border-zinc-200/50 text-[11px] text-zinc-500">
+          Digital Cookie delivers a curated digest of the latest Notion news and tutorials. We aggregate and summarize top-tier content from across the community to ensure you never miss a critical update. All original rights belong to the respective third-party creators.
+        </div>
+
+        <div className="space-y-4">
+          {sortedCategories.map((cat) => (
+            <CategoryCard 
+              key={cat} 
+              cat={cat} 
+              items={newsItems.filter(item => item.category === cat)} 
+            />
           ))}
         </div>
+
+        {eventItems.length > 0 && (
+          <footer className="mt-16 pt-8 border-t border-zinc-200 px-2">
+            <h2 className="text-zinc-400 text-[10px] font-bold uppercase tracking-[0.3em] mb-8">Upcoming Events</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {eventItems.map((event) => {
+                const d = new Date(event.date);
+                return (
+                  <a key={event.id} href={event.url} target="_blank" className="flex items-center bg-white border border-zinc-200 rounded-xl p-3 shadow-sm hover:shadow-md transition group">
+                    <div className="flex flex-col items-center justify-center bg-zinc-100 text-zinc-500 group-hover:bg-orange-600 group-hover:text-white rounded w-11 h-11 mr-4 transition-colors">
+                      <span className="text-[8px] uppercase font-bold leading-none">{d.toLocaleDateString("en-US", {month: 'short'})}</span>
+                      <span className="text-base font-bold">{d.getDate()}</span>
+                    </div>
+                    <div>
+                      <h4 className="text-[13px] font-bold text-zinc-700 group-hover:text-zinc-900 leading-tight">{event.title}</h4>
+                      <p className="text-[9px] text-zinc-400 uppercase mt-0.5 tracking-tighter">{event.source}</p>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+          </footer>
+        )}
       </div>
     </main>
   );
